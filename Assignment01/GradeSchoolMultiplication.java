@@ -27,8 +27,7 @@ public class GradeSchoolMultiplication {
         }
 
         // Then, leading zeros before the actual result of the multipication should be
-        // removed,
-        // considering that length of the result array was maximized
+        // removed, considering that length of the result array was maximized
         int startIndex = 0;
         while (startIndex < result.length - 1 && result[startIndex] == 0) {
             startIndex++;
