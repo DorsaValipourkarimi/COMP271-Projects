@@ -40,6 +40,26 @@ public class TreeNode implements Comparable<TreeNode> {
         return this.word;
     } // method toString
 
+    /**
+     * Counts the number of children (left and right) of this node.
+     * 
+     * @return the number of children (0, 1, or 2).
+     */
+    public int countChildren() {
+        int count = 0;
+
+        // Check if left child exists
+        if (this.left != null) {
+            count++; // Increment for left child
+        }
+
+        // Check if right child exists
+        if (this.right != null) {
+            count++; // Increment for right child
+        }
+
+        return count; // Return the total count
+    } //method countChildren
 
     /** Accesors and mutators */
 
