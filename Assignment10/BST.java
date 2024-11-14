@@ -121,9 +121,33 @@ public class BST {
      * NECESSARY COMMENTS AND, OF COURSE, SOME AWESOME CODE.
      **************************************************************************/
 
+    /**
+     * Checks if a node containing the target string exists in the tree.
+     * 
+     * @param target the string to search for in the tree
+     * @return true if the target is found, false otherwise
+     */
     public boolean contains(String target) {
-        return false;
-    } // method contains
+        boolean resultFound = false; // Initialize resultFound to false
+        TreeNode cursor = this.root; // Start from the root
+
+        // Traverse the tree to find the target
+        while (cursor != null && !resultFound) { // Continue as long as cursor is not null and resultFound is false
+            int comparison = target.compareTo(cursor.getWord()); // Compare target with the current node's word
+
+            // If the target is found, set resultFound to true
+            if (comparison == 0) {
+                resultFound = true;
+            } else if (comparison < 0) {
+                cursor = cursor.getLeft(); // Go to left child if target is smaller
+            } else {
+                cursor = cursor.getRight(); // Go to right child if target is larger
+            }
+        }
+
+        // Return resultFound, which indicates whether the target was found
+        return resultFound;
+    } //method contains
 
     public String toString() {
         return "WRITE SOME GOOD CODE";
