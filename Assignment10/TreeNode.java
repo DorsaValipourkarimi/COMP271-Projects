@@ -49,12 +49,12 @@ public class TreeNode implements Comparable<TreeNode> {
         int count = 0;
 
         // Check if left child exists
-        if (this.left != null) {
+        if (hasLeft()) {
             count++; // Increment for left child
         }
 
         // Check if right child exists
-        if (this.right != null) {
+        if (hasRight) {
             count++; // Increment for right child
         }
 
