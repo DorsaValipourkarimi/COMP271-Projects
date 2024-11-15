@@ -159,7 +159,7 @@ public class BST {
 
         // Return whether the target was found
         return resultFound;
-    } //method contains
+    } // method contains
 
     /**
      * Returns a string representation of the Binary Search Tree (BST).
@@ -187,7 +187,7 @@ public class BST {
             // Update the longest and shortest words if available
             longestWord = getLongest();
             shortestWord = getShortest();
-        } //method toString
+        } // method toString
 
         // Append information about the number of nodes, and the longest and shortest
         // words
@@ -254,9 +254,9 @@ public class BST {
             // If the target does not exist, print a message and return null
             System.out.println("The target word does not exist in the tree.");
         }
-
+        numberOfNodes--; // Update numberOfNodes after removal of thre target node
         return removed; // Return the removed node, or null if not found
-    } //remove method
+    } // remove method
 
     /**
      * Removes a leaf node (a node with no children) from the tree.
@@ -283,7 +283,7 @@ public class BST {
         }
 
         return nodeToRemove; // Return the removed node
-    } //helper method removeLeafNode
+    } // helper method removeLeafNode
 
     /**
      * Removes a node with one child by replacing it with its only child.
@@ -320,7 +320,7 @@ public class BST {
         }
 
         return nodeToRemove; // Return the removed node
-    } //helper method removeNodeWithOneChild
+    } // helper method removeNodeWithOneChild
 
     /**
      * Removes a node with two children. The algorithm follows these steps:
@@ -357,7 +357,7 @@ public class BST {
             // If the successor is a leaf node, remove it using removeLeafNode
             return removeLeafNode(successor, successorParent);
         }
-    } //helper method removeNodeWithTwoChild
+    } // helper method removeNodeWithTwoChild
 
     /**
      * Finds and returns the parent node of a given child node in the tree.
@@ -387,7 +387,7 @@ public class BST {
         }
 
         return parent; // Return the parent, or null if no parent is found
-    } //helper method getParentNode
+    } // helper method getParentNode
 
     /******************************* Accessors *******************************/
 

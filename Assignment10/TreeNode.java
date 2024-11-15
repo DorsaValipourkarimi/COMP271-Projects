@@ -54,7 +54,7 @@ public class TreeNode implements Comparable<TreeNode> {
         }
 
         // Check if right child exists
-        if (hasRight) {
+        if (hasRight()) {
             count++; // Increment for right child
         }
 
