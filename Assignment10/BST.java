@@ -197,8 +197,9 @@ public class BST {
 
     /**
      * Removes a node with the specified target word from the tree.
-     * This method traverses the tree iteratively to locate the target node,
-     * and then removes it based on how many children the node has (leaf, one child,
+     * This method traverses the tree to locate the target node,
+     * and then removes it based on how many children the node has (leaf(none), one
+     * child,
      * or two children).
      *
      * @param target    The word to search for and remove from the tree.
@@ -210,15 +211,14 @@ public class BST {
         TreeNode parent = null; // Parent of the current node being checked
         TreeNode current = belowNode; // Starting point for tree traversal
 
-        // Traverse the tree iteratively to find the target node
+        // Traverse the tree until it finds the target node
         while (current != null) {
             int comparison = target.compareTo(current.getWord()); // Compare the target with the current node's word
-
+            //parent = getParentNode(current, this.root);
             if (comparison == 0) {
                 // Target node found, determine how to remove it based on the number of children
                 int childrenCount = current.countChildren(); // Use the countChildren() method to get the number of
                                                              // children
-
                 if (childrenCount == 0) {
                     // Case 1: Node has no children (leaf node)
                     removed = removeLeafNode(current, parent);
@@ -339,6 +339,8 @@ public class BST {
         // Return the removed successor node
         return successor;
     }
+
+ 
 
     /******************************* Accessors *******************************/
 
