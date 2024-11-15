@@ -258,11 +258,37 @@ public class BST {
 
         // If a node is removed, check if it was the longest or shortest word
         if (removed != null) {
-            if (removed.getWord().equals(this.longest)) {
-                this.longest = getLongest(); //update the longest word
-            }
-            if (removed.getWord().equals(this.shortest)) {
-                this.shortest = getShortest(); //update the shortest word
+            if (numberOfNodes == 0) {
+                // If the tree is empty after removal, reset the longest and shortest to default
+                // values
+                this.longest = DEFAULT_WORD_VALUE;
+                this.shortest = DEFAULT_WORD_VALUE;
+            } else {
+                // If the removed node is the longest word, update the longest word
+                if (removed.getWord().equals(this.longest)) {
+                    if (removed.hasRight()) {
+                        // If the removed node has a right child, the longest word might be the leftmost
+                        // node in the right subtree
+                        this.longest = findLeftmost(removed.getRight()).getWord();
+                    } else {
+                        // If the removed node has no right child, set longest to null (or find the next
+                        // longest word)
+                        this.longest = null;
+                    }
+                }
+
+                // If the removed node is the shortest word, update the shortest word
+                if (removed.getWord().equals(this.shortest)) {
+                    if (removed.hasLeft()) {
+                        // If the removed node has a left child, the shortest word might be the
+                        // rightmost node in the left subtree
+                        this.shortest = findRightmost(removed.getLeft()).getWord();
+                    } else {
+                        // If the removed node has no left child, set shortest to null (or find the next
+                        // shortest word)
+                        this.shortest = null;
+                    }
+                }
             }
         }
 
@@ -400,6 +426,43 @@ public class BST {
         return parent; // Return the parent, or null if no parent is found
     } // helper method getParentNode
 
+    /**
+     * Finds the leftmost (smallest) node in the given subtree.
+     * This method traverses the left children of the tree starting from the given
+     * node
+     * and returns the leftmost node (the node with the smallest value in the
+     * subtree).
+     *
+     * @param node The starting node (subtree root) to search for the leftmost node.
+     * @return The leftmost node in the subtree, or null if the subtree is empty.
+     */
+    private TreeNode findLeftmost(TreeNode node) {
+        // Traverse left as much as possible to find the leftmost node
+        while (node != null && node.getLeft() != null) {
+            node = node.getLeft();
+        }
+        return node;
+    } // helper method findLeftmost
+
+    /**
+     * Finds the rightmost (largest) node in the given subtree.
+     * This method traverses the right children of the tree starting from the given
+     * node
+     * and returns the rightmost node (the node with the largest value in the
+     * subtree).
+     *
+     * @param node The starting node (subtree root) to search for the rightmost
+     *             node.
+     * @return The rightmost node in the subtree, or null if the subtree is empty.
+     */
+    private TreeNode findRightmost(TreeNode node) {
+        // Traverse right as much as possible to find the rightmost node
+        while (node != null && node.getRight() != null) {
+            node = node.getRight();
+        }
+        return node;
+    } // helper method findRightmost
+
     /******************************* Accessors *******************************/
 
     public int getNumberOfNodes() {
@@ -417,4 +480,5 @@ public class BST {
     public String getShortest() {
         return shortest;
     }
+
 } // class BST
