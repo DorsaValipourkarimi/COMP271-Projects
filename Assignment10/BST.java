@@ -254,10 +254,10 @@ public class BST {
             // If the target does not exist, print a message and return null
             System.out.println("The target word does not exist in the tree.");
         }
-        numberOfNodes--; // Update numberOfNodes after removal of thre target node
 
         // If a node is removed, check if it was the longest or shortest word
         if (removed != null) {
+            numberOfNodes--; // Update numberOfNodes after removal of thre target node
             if (numberOfNodes == 0) {
                 // If the tree is empty after removal, reset the longest and shortest to default
                 // values
@@ -273,7 +273,7 @@ public class BST {
                     } else {
                         // If the removed node has no right child, set longest to null (or find the next
                         // longest word)
-                        this.longest = null;
+                        this.longest = DEFAULT_WORD_VALUE;
                     }
                 }
 
@@ -286,7 +286,7 @@ public class BST {
                     } else {
                         // If the removed node has no left child, set shortest to null (or find the next
                         // shortest word)
-                        this.shortest = null;
+                        this.shortest = DEFAULT_WORD_VALUE;
                     }
                 }
             }
