@@ -10,6 +10,11 @@ public class BST {
     private String longest;
     private String shortest;
 
+    // Constant for the message to display when the tree is empty
+    private static final String EMPTY_TREE_MESSAGE = "The tree is empty.\n";
+    // Constant for the default value when the longest or shortest word is null
+    private static final String DEFAULT_WORD_VALUE = "None";
+
     /** Default constructor */
     public BST() {
         this.root = null;
@@ -147,15 +152,193 @@ public class BST {
 
         // Return resultFound, which indicates whether the target was found
         return resultFound;
-    } //method contains
+    } // method contains
 
+    /**
+     * Returns a string representation of the Binary Search Tree (BST).
+     * If the tree is empty, it indicates that. Otherwise, it includes
+     * information about the number of nodes, longest word, and shortest word.
+     * 
+     * @return A descriptive string of the tree's properties.
+     */
+    @Override
     public String toString() {
-        return "WRITE SOME GOOD CODE";
+        // Start building the result string
+        String result = "Binary Search Tree (BST):\n";
+
+        // Store the number of nodes in the tree
+        int numberOfNodes = this.numberOfNodes;
+
+        // Default values for the longest and shortest words
+        String longestWord = DEFAULT_WORD_VALUE;
+        String shortestWord = DEFAULT_WORD_VALUE;
+
+        // Check if the tree is empty (root is null)
+        if (this.root == null) {
+            result += EMPTY_TREE_MESSAGE; // Add message for empty tree
+        } else {
+            // If the tree has nodes, check for the longest and shortest words
+            if (this.longest != null) {
+                longestWord = this.longest; // Update longest word if available
+            }
+            if (this.shortest != null) {
+                shortestWord = this.shortest; // Update shortest word if available
+            }
+        }
+
+        // Add the number of nodes, longest word, and shortest word to the result
+        result += "Number of Nodes: " + numberOfNodes + "\n";
+        result += "Longest Word: " + longestWord + "\n";
+        result += "Shortest Word: " + shortestWord + "\n";
+
+        // Return the complete string representation
+        return result;
     } // method toString
 
+    /**
+     * Removes a node with the specified target word from the tree.
+     * This method traverses the tree iteratively to locate the target node,
+     * and then removes it based on how many children the node has (leaf, one child,
+     * or two children).
+     *
+     * @param target    The word to search for and remove from the tree.
+     * @param belowNode The starting point (root or subtree) for the search.
+     * @return The removed node, or null if the node is not found.
+     */
     public TreeNode remove(String target, TreeNode belowNode) {
-        return null;
-    } // method remove
+        TreeNode removed = null; // The node that will be removed
+        TreeNode parent = null; // Parent of the current node being checked
+        TreeNode current = belowNode; // Starting point for tree traversal
+
+        // Traverse the tree iteratively to find the target node
+        while (current != null) {
+            int comparison = target.compareTo(current.getWord()); // Compare the target with the current node's word
+
+            if (comparison == 0) {
+                // Target node found, determine how to remove it based on the number of children
+                int childrenCount = current.countChildren(); // Use the countChildren() method to get the number of
+                                                             // children
+
+                if (childrenCount == 0) {
+                    // Case 1: Node has no children (leaf node)
+                    removed = removeLeafNode(current, parent);
+                } else if (childrenCount == 1) {
+                    // Case 2: Node has one child
+                    removed = removeNodeWithOneChild(current, parent);
+                } else if (childrenCount == 2) {
+                    // Case 3: Node has two children
+                    removed = removeNodeWithTwoChildren(current, parent);
+                }
+            } else if (comparison < 0) {
+                // Target is smaller than current node, go to the left child
+                parent = current;
+                current = current.getLeft();
+            } else {
+                // Target is larger than current node, go to the right child
+                parent = current;
+                current = current.getRight();
+            }
+        }
+
+        return removed; // Return the removed node, or null if not found
+    }
+
+    /**
+     * Helper method to remove a leaf node (node with no children).
+     *
+     * @param nodeToRemove The node to remove.
+     * @param parent       The parent of the node to remove.
+     * @return The removed node.
+     */
+    private TreeNode removeLeafNode(TreeNode nodeToRemove, TreeNode parent) {
+        if (nodeToRemove == this.root) {
+            // If node is the root, we set the root to null (no root left)
+            this.root = null;
+        } else {
+            // Otherwise, update the parent's left or right pointer to null
+            if (parent.getLeft() == nodeToRemove) {
+                parent.setLeft(null); // Disconnect the node from its parent (left child)
+            } else {
+                parent.setRight(null); // Disconnect the node from its parent (right child)
+            }
+        }
+
+        // Return the removed node
+        return nodeToRemove;
+    }
+
+    /**
+     * Helper method to remove a node with one child.
+     * The node is replaced by its only child.
+     *
+     * @param nodeToRemove The node to remove.
+     * @param parent       The parent of the node to remove.
+     * @return The removed node.
+     */
+    private TreeNode removeNodeWithOneChild(TreeNode nodeToRemove, TreeNode parent) {
+        // Determine which child (left or right) the node has
+        TreeNode child = (nodeToRemove.getLeft() != null) ? nodeToRemove.getLeft() : nodeToRemove.getRight();
+
+        if (nodeToRemove == this.root) {
+            // If node is the root, replace it with its only child
+            this.root = child;
+        } else {
+            // Otherwise, update the parent's left or right pointer to the child
+            if (parent.getLeft() == nodeToRemove) {
+                parent.setLeft(child); // Replace left child with the actual child
+            } else {
+                parent.setRight(child); // Replace right child with the actual child
+            }
+        }
+
+        // Return the removed node
+        return nodeToRemove;
+    }
+
+    /**
+     * Helper method to remove a node with two children.
+     * The node is replaced by its in-order successor (smallest node in the right
+     * subtree).
+     *
+     * @param nodeToRemove The node to remove.
+     * @param parent       The parent of the node to remove.
+     * @return The removed successor node.
+     */
+    private TreeNode removeNodeWithTwoChildren(TreeNode nodeToRemove, TreeNode parent) {
+        // Find the in-order successor (smallest node in the right subtree)
+        TreeNode successorParent = nodeToRemove;
+        TreeNode successor = nodeToRemove.getRight(); // Start from the right child (to find the in-order successor)
+
+        // Traverse left to find the smallest node (in-order successor)
+        while (successor.getLeft() != null) {
+            successorParent = successor; // Keep track of the successor's parent
+            successor = successor.getLeft(); // Go to the left child to find the smallest node
+        }
+
+        // Replace the value of nodeToRemove with the successor's value
+        nodeToRemove.setWord(successor.getWord());
+
+        // Now we need to remove the successor node (which will have at most one child)
+        if (successor.getRight() != null) {
+            // If the successor has a right child, link its parent to that child
+            if (successorParent.getLeft() == successor) {
+                successorParent.setLeft(successor.getRight());
+            } else {
+                successorParent.setRight(successor.getRight());
+            }
+        } else {
+            // If the successor has no right child, just remove it (disconnect it from its
+            // parent)
+            if (successorParent.getLeft() == successor) {
+                successorParent.setLeft(null);
+            } else {
+                successorParent.setRight(null);
+            }
+        }
+
+        // Return the removed successor node
+        return successor;
+    }
 
     /******************************* Accessors *******************************/
 
