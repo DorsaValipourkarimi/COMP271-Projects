@@ -255,6 +255,17 @@ public class BST {
             System.out.println("The target word does not exist in the tree.");
         }
         numberOfNodes--; // Update numberOfNodes after removal of thre target node
+
+        // If a node is removed, check if it was the longest or shortest word
+        if (removed != null) {
+            if (removed.getWord().equals(this.longest)) {
+                this.longest = getLongest(); //update the longest word
+            }
+            if (removed.getWord().equals(this.shortest)) {
+                this.shortest = getShortest(); //update the shortest word
+            }
+        }
+
         return removed; // Return the removed node, or null if not found
     } // remove method
 

@@ -20,6 +20,8 @@ public class BSTTest {
         // Test remove method: Remove a node that exists
         System.out.println("Removing 'kiwi' from the tree.");
         tree.remove("kiwi");
+        tree.add("bananaaa");
+
         System.out.println(tree.toString());
 
         // Test remove method: Try removing a node that doesn't exist
