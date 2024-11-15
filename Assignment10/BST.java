@@ -129,122 +129,145 @@ public class BST {
     /**
      * Checks if a node containing the target string exists in the tree.
      * 
-     * @param target the string to search for in the tree
-     * @return true if the target is found, false otherwise
+     * The method traverses the tree, comparing the target string with each node's
+     * word. If a match is found, it returns true; otherwise, it continues the
+     * search
+     * until the target is located or the tree has been fully traversed.
+     *
+     * @param target The string to search for in the tree.
+     * @return true if the target is found, false otherwise.
      */
     public boolean contains(String target) {
-        boolean resultFound = false; // Initialize resultFound to false
-        TreeNode cursor = this.root; // Start from the root
+        boolean resultFound = false; // Flag to indicate whether the target is found
+        TreeNode cursor = this.root; // Start traversal from the root
 
-        // Traverse the tree to find the target
-        while (cursor != null && !resultFound) { // Continue as long as cursor is not null and resultFound is false
-            int comparison = target.compareTo(cursor.getWord()); // Compare target with the current node's word
+        // Traverse the tree to search for the target node.
+        while (cursor != null && !resultFound) {
+            int comparison = target.compareTo(cursor.getWord()); // Compare target with current node's word
 
-            // If the target is found, set resultFound to true
             if (comparison == 0) {
+                // If the target matches the current node's word, set resultFound to true
                 resultFound = true;
             } else if (comparison < 0) {
-                cursor = cursor.getLeft(); // Go to left child if target is smaller
+                // If the target is smaller, move to the left child
+                cursor = cursor.getLeft();
             } else {
-                cursor = cursor.getRight(); // Go to right child if target is larger
+                // If the target is larger, move to the right child
+                cursor = cursor.getRight();
             }
         }
 
-        // Return resultFound, which indicates whether the target was found
+        // Return whether the target was found
         return resultFound;
-    } // method contains
+    } //method contains
 
     /**
      * Returns a string representation of the Binary Search Tree (BST).
-     * If the tree is empty, it indicates that. Otherwise, it includes
-     * information about the number of nodes, longest word, and shortest word.
-     * 
-     * @return A descriptive string of the tree's properties.
+     * If the tree is empty, a message indicating this is included. Otherwise,
+     * the string includes information about the number of nodes, and the longest
+     * and shortest words present in the tree.
+     *
+     * @return A string describing the tree's properties.
      */
     @Override
     public String toString() {
-        // Start building the result string
-        String result = "Binary Search Tree (BST):\n";
+        String result = "Binary Search Tree (BST):\n"; // Start with the header
 
         // Store the number of nodes in the tree
         int numberOfNodes = this.numberOfNodes;
 
-        // Default values for the longest and shortest words
+        // Set default values for the longest and shortest words
         String longestWord = DEFAULT_WORD_VALUE;
         String shortestWord = DEFAULT_WORD_VALUE;
 
-        // Check if the tree is empty (root is null)
+        // Check if the tree is empty
         if (this.root == null) {
-            result += EMPTY_TREE_MESSAGE; // Add message for empty tree
+            result += EMPTY_TREE_MESSAGE; // Add message for an empty tree
         } else {
-            // If the tree has nodes, check for the longest and shortest words
+            // Update the longest and shortest words if available
             if (this.longest != null) {
-                longestWord = this.longest; // Update longest word if available
+                longestWord = this.longest;
             }
             if (this.shortest != null) {
-                shortestWord = this.shortest; // Update shortest word if available
+                shortestWord = this.shortest;
             }
-        }
+        } //method toString
 
-        // Add the number of nodes, longest word, and shortest word to the result
+        // Append information about the number of nodes, and the longest and shortest
+        // words
         result += "Number of Nodes: " + numberOfNodes + "\n";
         result += "Longest Word: " + longestWord + "\n";
         result += "Shortest Word: " + shortestWord + "\n";
 
-        // Return the complete string representation
-        return result;
-    } // method toString
-
-    /**
-     * Removes a node with the specified target word from the tree.
-     * This method traverses the tree to locate the target node,
-     * and then removes it based on how many children the node has (leaf(none), one
-     * child,
-     * or two children).
-     *
-     * @param target    The word to search for and remove from the tree.
-     * @param belowNode The starting point (root or subtree) for the search.
-     * @return The removed node, or null if the node is not found.
-     */
-    public TreeNode remove(String target, TreeNode belowNode) {
-        TreeNode removed = null; // The node that will be removed
-        TreeNode parent = null; // Parent of the current node being checked
-        TreeNode current = belowNode; // Starting point for tree traversal
-
-        // Traverse the tree until it finds the target node
-        while (current != null) {
-            int comparison = target.compareTo(current.getWord()); // Compare the target with the current node's word
-            parent = getParentNode(current, this.root);
-            if (comparison == 0) {
-                // Target node found, determine how to remove it based on the number of children
-                int childrenCount = current.countChildren(); // Use the countChildren() method to get the number of
-                                                             // children
-                if (childrenCount == 0) {
-                    // Case 1: Node has no children (leaf node)
-                    removed = removeLeafNode(current, parent);
-                } else if (childrenCount == 1) {
-                    // Case 2: Node has one child
-                    removed = removeNodeWithOneChild(current, parent);
-                } else if (childrenCount == 2) {
-                    // Case 3: Node has two children
-                    removed = removeNodeWithTwoChildren(current, parent);
-                }
-            } else if (comparison < 0) {
-                // Target is smaller than current node, go to the left child
-                parent = current;
-                current = current.getLeft();
-            } else {
-                // Target is larger than current node, go to the right child
-                parent = current;
-                current = current.getRight();
-            }
-        }
-
-        return removed; // Return the removed node, or null if not found
+        return result; // Return the complete string representation
     }
 
     /**
-     * Helper method to remove a leaf node (node with no children).
+     * Removes a node with the specified target word from the tree or subtree.
+     * The method first checks if the target exists using the {@link contains}
+     * method.
+     * If the target is found, it proceeds to remove the node by handling different
+     * cases depending on the number of children the node has (no children, one
+     * child, or two children).
+     * 
+     * @param target    The word to search for and remove from the tree.
+     * @param belowNode The starting node for the search, which could be the root
+     *                  or any subtree.
+     * @return The removed node if found, or null if the target node does not exist
+     *         in the tree.
+     */
+    public TreeNode remove(String target, TreeNode belowNode) {
+        TreeNode removed = null; // The node that will be removed
+
+        // Check if the target exists in the tree or subtree using the contains method
+        if (contains(target)) {
+            TreeNode current = belowNode; // Start from the given node for traversal
+            TreeNode parent = getParentNode(current, this.root); // Get the parent node for tree modification
+
+            // Traverse the tree to find the target node
+            while (current != null) {
+                int comparison = target.compareTo(current.getWord()); // Compare the target with the current node's word
+
+                if (comparison == 0) {
+                    // Once the target node is found, decide how to remove it based on its children
+                    int childrenCount = current.countChildren(); // Count how many children the node has
+
+                    if (childrenCount == 0) {
+                        // If the node has no children (leaf node), remove it
+                        removed = removeLeafNode(current, parent);
+                    } else if (childrenCount == 1) {
+                        // If the node has one child, remove it by replacing it with the child
+                        removed = removeNodeWithOneChild(current, parent);
+                    } else if (childrenCount == 2) {
+                        // If the node has two children, handle it by finding and removing the in-order
+                        // successor
+                        removed = removeNodeWithTwoChildren(current, parent);
+                    }
+                    break; // Exit the loop once the node has been removed
+                } else if (comparison < 0) {
+                    // If the target is smaller, move to the left child
+                    parent = current;
+                    current = current.getLeft();
+                } else {
+                    // If the target is larger, move to the right child
+                    parent = current;
+                    current = current.getRight();
+                }
+            }
+        } else {
+            // If the target does not exist, print a message and return null
+            System.out.println("The target word does not exist in the tree.");
+        }
+
+        return removed; // Return the removed node, or null if not found
+    } //remove method
+
+    /**
+     * Removes a leaf node (a node with no children) from the tree.
+     *
+     * If the node is the root, the root is set to null. Otherwise, the parent
+     * node's
+     * pointer to the node is set to null, effectively removing the node.
      *
      * @param nodeToRemove The node to remove.
      * @param parent       The parent of the node to remove.
@@ -252,7 +275,7 @@ public class BST {
      */
     private TreeNode removeLeafNode(TreeNode nodeToRemove, TreeNode parent) {
         if (nodeToRemove == this.root) {
-            // If node is the root, we set the root to null (no root left)
+            // If the node is the root, set the root to null
             this.root = null;
         } else {
             // Otherwise, update the parent's left or right pointer to null
@@ -263,24 +286,33 @@ public class BST {
             }
         }
 
-        // Return the removed node
-        return nodeToRemove;
-    }
+        return nodeToRemove; // Return the removed node
+    } //helper method removeLeafNode
 
     /**
-     * Helper method to remove a node with one child.
-     * The node is replaced by its only child.
+     * Removes a node with one child by replacing it with its only child.
+     *
+     * If the node to remove is the root, it is replaced by its only child. If it is
+     * not the root, the parent’s left or right pointer is updated to point to the
+     * child.
      *
      * @param nodeToRemove The node to remove.
      * @param parent       The parent of the node to remove.
      * @return The removed node.
      */
     private TreeNode removeNodeWithOneChild(TreeNode nodeToRemove, TreeNode parent) {
-        // Determine which child (left or right) the node has
-        TreeNode child = (nodeToRemove.getLeft() != null) ? nodeToRemove.getLeft() : nodeToRemove.getRight();
+        TreeNode child; // Initialize child TreeNode for the nodeToBeRemoved
+        // Check if the node has a left child
+        if (nodeToRemove.getLeft() != null) {
+            // If the node has a left child, set the child to be the left child
+            child = nodeToRemove.getLeft();
+        } else {
+            // If the node does not have a left child, set the child to be the right child
+            child = nodeToRemove.getRight();
+        }
 
         if (nodeToRemove == this.root) {
-            // If node is the root, replace it with its only child
+            // If the node is the root, replace it with its only child
             this.root = child;
         } else {
             // Otherwise, update the parent's left or right pointer to the child
@@ -291,88 +323,75 @@ public class BST {
             }
         }
 
-        // Return the removed node
-        return nodeToRemove;
-    }
+        return nodeToRemove; // Return the removed node
+    } //helper method removeNodeWithOneChild
 
     /**
-     * Helper method to remove a node with two children.
-     * The node is replaced by its in-order successor (smallest node in the right
+     * Removes a node with two children. The algorithm follows these steps:
+     * 1. It finds the node’s in-order successor (the smallest node in the right
      * subtree).
+     * 2. The successor’s value is copied to the node to be removed.
+     * 3. The successor is removed from the tree, which will either be a leaf node
+     * or have one child.
      *
-     * @param nodeToRemove The node to remove.
+     * @param nodeToRemove The node to remove, which has two children.
      * @param parent       The parent of the node to remove.
-     * @return The removed successor node.
+     * @return The removed node, which is the in-order successor (since it’s the one
+     *         that gets removed last).
      */
     private TreeNode removeNodeWithTwoChildren(TreeNode nodeToRemove, TreeNode parent) {
-        // Find the in-order successor (smallest node in the right subtree)
-        TreeNode successorParent = nodeToRemove;
-        TreeNode successor = nodeToRemove.getRight(); // Start from the right child (to find the in-order successor)
+        // Step 1: Find the in-order successor (the smallest node in the right subtree)
+        TreeNode successorParent = nodeToRemove; // Start with the node to remove
+        TreeNode successor = nodeToRemove.getRight(); // Begin by looking at the right child
 
-        // Traverse left to find the smallest node (in-order successor)
+        // Traverse left until the leftmost node (in-order successor) is found
         while (successor.getLeft() != null) {
-            successorParent = successor; // Keep track of the successor's parent
-            successor = successor.getLeft(); // Go to the left child to find the smallest node
+            successorParent = successor; // Move the parent pointer to the current node
+            successor = successor.getLeft(); // Move left to find the smallest node
         }
 
-        // Replace the value of nodeToRemove with the successor's value
-        nodeToRemove.setWord(successor.getWord());
+        // Step 2: Copy the successor’s value to the node to be removed
+        nodeToRemove.setWord(successor.getWord()); // Copy successor’s word to the node
 
-        // Now we need to remove the successor node (which will have at most one child)
+        // Step 3: Remove the successor from the tree
         if (successor.getRight() != null) {
-            // If the successor has a right child, link its parent to that child
-            if (successorParent.getLeft() == successor) {
-                successorParent.setLeft(successor.getRight());
-            } else {
-                successorParent.setRight(successor.getRight());
-            }
+            // If the successor has a right child, remove it using removeNodeWithOneChild
+            return removeNodeWithOneChild(successor, successorParent);
         } else {
-            // If the successor has no right child, just remove it (disconnect it from its
-            // parent)
-            if (successorParent.getLeft() == successor) {
-                successorParent.setLeft(null);
-            } else {
-                successorParent.setRight(null);
-            }
+            // If the successor is a leaf node, remove it using removeLeafNode
+            return removeLeafNode(successor, successorParent);
         }
-
-        // Return the removed successor node
-        return successor;
-    }
+    } //helper method removeNodeWithTwoChild
 
     /**
-     * Finds and returns the parent node of a given child node in a binary tree.
-     * This method traverses the tree starting from the specified belowNode and
-     * searches for the parent of the provided child node.
+     * Finds and returns the parent node of a given child node in the tree.
+     * The search starts from the provided starting node (root or subtree).
      *
      * @param child     The node whose parent is to be found.
-     * @param belowNode The starting node (could be the root of the tree or a
-     *                  subtree)
-     *                  from which the search begins.
-     * @return The parent node of the specified child node, or null if the child is
-     *         not found
-     *         or the child is the root of the tree (which has no parent).
+     * @param belowNode The starting node for the search (could be the root or a
+     *                  subtree).
+     * @return The parent node of the child, or null if no parent is found.
      */
     private TreeNode getParentNode(TreeNode child, TreeNode belowNode) {
-        TreeNode parent = null; // Variable to store the parent node
-        TreeNode current = belowNode; // Start the search from the belowNode (root or subtree)
+        TreeNode parent = null; // Variable to store the parent node, initialized to null
+        TreeNode current = belowNode; // Start the search from belowNode
 
-        // Traverse the tree until the child is found or no more nodes to search
-        while (current != null) {
-            // Check if current node's left or right child is the given child
+        // Traverse the tree to find the parent node
+        while (current != null && child != null) {
+            // If the current node's left or right child is the given child, set parent
             if (current.getLeft() == child || current.getRight() == child) {
-                parent = current; // Set current as the parent if the child is found
+                parent = current;
             } else if (child.getWord().compareTo(current.getWord()) < 0) {
-                // If the child's word is smaller than the current node's word, move to the left
+                // If the child’s word is smaller, move left
                 current = current.getLeft();
             } else {
-                // Otherwise, move to the right
+                // Otherwise, move right
                 current = current.getRight();
             }
         }
 
-        return parent; // Return null if no parent is found (child is not in the tree)
-    }
+        return parent; // Return the parent, or null if no parent is found
+    } //helper method getParentNode
 
     /******************************* Accessors *******************************/
 
@@ -392,110 +411,3 @@ public class BST {
         return shortest;
     }
 } // class BST
-
-
-
-
-
-
-
-/*
- * 
- * private TreeNode removeLeafNode(TreeNode nodeToRemove, TreeNode parent) {
-    // Handle case where the node to remove is the root (no parent)
-    if (nodeToRemove == this.root) {
-        this.root = null; // If node is the root, set the root to null
-    } else if (parent != null) {
-        // Otherwise, update the parent's left or right pointer to null
-        if (parent.getLeft() == nodeToRemove) {
-            parent.setLeft(null); // Disconnect the node from its parent (left child)
-        } else {
-            parent.setRight(null); // Disconnect the node from its parent (right child)
-        }
-    }
-
-    // Return the removed node
-    return nodeToRemove;
-}
-
-private TreeNode removeNodeWithOneChild(TreeNode nodeToRemove, TreeNode parent) {
-    // Determine which child (left or right) the node has
-    TreeNode child = (nodeToRemove.getLeft() != null) ? nodeToRemove.getLeft() : nodeToRemove.getRight();
-
-    // Handle case where the node to remove is the root (no parent)
-    if (nodeToRemove == this.root) {
-        this.root = child; // If node is the root, replace it with its only child
-    } else if (parent != null) {
-        // Otherwise, update the parent's left or right pointer to the child
-        if (parent.getLeft() == nodeToRemove) {
-            parent.setLeft(child); // Replace left child with the actual child
-        } else {
-            parent.setRight(child); // Replace right child with the actual child
-        }
-    }
-
-    // Return the removed node
-    return nodeToRemove;
-}
-
-private TreeNode removeNodeWithTwoChildren(TreeNode nodeToRemove, TreeNode parent) {
-    // Find the in-order successor (smallest node in the right subtree)
-    TreeNode successorParent = nodeToRemove;
-    TreeNode successor = nodeToRemove.getRight(); // Start from the right child (to find the in-order successor)
-
-    // Traverse left to find the smallest node (in-order successor)
-    while (successor.getLeft() != null) {
-        successorParent = successor; // Keep track of the successor's parent
-        successor = successor.getLeft(); // Go to the left child to find the smallest node
-    }
-
-    // Replace the value of nodeToRemove with the successor's value
-    nodeToRemove.setWord(successor.getWord());
-
-    // Now we need to remove the successor node (which will have at most one child)
-    if (successor.getRight() != null) {
-        // If the successor has a right child, link its parent to that child
-        if (successorParent.getLeft() == successor) {
-            successorParent.setLeft(successor.getRight());
-        } else {
-            successorParent.setRight(successor.getRight());
-        }
-    } else {
-        // If the successor has no right child, just remove it (disconnect it from its parent)
-        if (successorParent.getLeft() == successor) {
-            successorParent.setLeft(null);
-        } else {
-            successorParent.setRight(null);
-        }
-    }
-
-    // Return the removed successor node
-    return successor;
-}
-
-private TreeNode getParentNode(TreeNode child, TreeNode belowNode) {
-    TreeNode parent = null; // Variable to store the parent node
-    TreeNode current = belowNode; // Start the search from the belowNode (root or subtree)
-
-    // Traverse the tree until the child is found or no more nodes to search
-    while (current != null) {
-        // Check if current node's left or right child is the given child
-        if (current.getLeft() == child || current.getRight() == child) {
-            parent = current; // Set current as the parent if the child is found
-            break; // Parent found, exit loop
-        } else if (child.getWord().compareTo(current.getWord()) < 0) {
-            // If the child's word is smaller than the current node's word, move to the left
-            current = current.getLeft();
-        } else {
-            // Otherwise, move to the right
-            current = current.getRight();
-        }
-    }
-
-    return parent; // Return null if no parent is found (child is not in the tree)
-}
- * 
- * 
- * 
- * 
- */
