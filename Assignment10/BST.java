@@ -185,12 +185,8 @@ public class BST {
             result += EMPTY_TREE_MESSAGE; // Add message for an empty tree
         } else {
             // Update the longest and shortest words if available
-            if (this.longest != null) {
-                longestWord = this.longest;
-            }
-            if (this.shortest != null) {
-                shortestWord = this.shortest;
-            }
+            longestWord = getLongest();
+            shortestWord = getShortest();
         } //method toString
 
         // Append information about the number of nodes, and the longest and shortest
