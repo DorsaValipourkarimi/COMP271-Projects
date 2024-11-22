@@ -1,7 +1,16 @@
+/**
+ * This class implements Huffman Encoding using a MinHeap data structure. It provides functionality to:
+ * - Calculate symbol frequencies
+ * - Build a Huffman tree
+ * - Generate Huffman codes
+ * - Encode a message and report compression efficiency.
+ * 
+ * The class is designed for efficient text compression and can be used to visualize and analyze 
+ * the resulting Huffman codes and their compression effectiveness.
+ */
 public class HuffmanEncodingWithHeap {
 
-    private static final int ASCII8 = 256; // Total number of possible ASCII characters (256 characters in extended
-                                           // ASCII)
+    private static final int ASCII8 = 256; // Total number of possible ASCII characters (256 characters)
     private static final char LEFT = '0'; // Character representing the left branch of the Huffman tree
     private static final char RIGHT = '1'; // Character representing the right branch of the Huffman tree
     private static final String EMPTY = ""; // Empty string for initializing the Huffman code
@@ -14,8 +23,8 @@ public class HuffmanEncodingWithHeap {
      * @return Array of frequency counts for each ASCII value
      */
     static public int[] countFrequency(String message) {
-        int[] frequencies = new int[ASCII8]; // Array to hold frequency of each ASCII character, initialized to 0
-        if (message != null) {
+        int[] frequencies = new int[ASCII8]; // Array to hold frequency of each ASCII character
+        if (message != null) { // if message is not empty
             for (int i = 0; i < message.length(); i++) { // Loop through each character in the message
                 frequencies[(int) message.charAt(i)]++; // Increment the frequency of the character at the ASCII index
             }
@@ -41,14 +50,16 @@ public class HuffmanEncodingWithHeap {
     } // method buildForest
 
     /**
-     * Apply Huffman's algorithm to create a Huffman tree using a MinHeap.
+     * Constructs the Huffman tree by applying Huffman's algorithm (repeatedly
+     * combining the two nodes with the smallest frequencies).
      * 
      * @param heap MinHeap of HuffmanNodes
      * @return The root node of the Huffman tree
      */
     public static HuffmanNode buildTree(MinHeap<HuffmanNode> heap) {
-        // While there is more than one node in the heap, continue building the tree
-        while (heap.size() > 1) { // As long as there are at least two nodes in the heap
+        // While there's more than one node in the heap, continue building thew tree
+        // (keep combining the two smallest)
+        while (heap.size() > 1) {
             // Remove the two nodes with the smallest frequencies
             HuffmanNode t1 = heap.removeMin(); // Remove the node with the smallest frequency
             HuffmanNode t2 = heap.removeMin(); // Remove the next smallest node
@@ -162,7 +173,7 @@ public class HuffmanEncodingWithHeap {
     /** Driver code */
     public static void main(String[] args) {
         String message = "now is the winter of our discontent made glorious by this son of york and all the clouds that lour'd over our house in the deep bosom of the ocean lay";
-        encode(message); 
+        encode(message);
     } // method main
 
 } // class HuffmanEncodingWithHeap
