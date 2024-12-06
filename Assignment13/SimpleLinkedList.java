@@ -83,28 +83,30 @@ public class SimpleLinkedList {
 
     /**
      * Finds and returns the middle node of the linked list.
-     * If the list has an even number of nodes, returns the first of the two middle
-     * nodes.
-     * Traverses the list only once using a two-pointer approach.
+     * If the list has an even number of nodes, it returns the first of the two
+     * middle nodes.
+     * The method uses a two-pointer approach to traverse the list in one go.
      * 
      * @return the middle node of the linked list, or null if the list is empty.
      */
     public Node findMiddle() {
-        Node result = null; // Initialize the result variable
-        Node slowPointer = this.head; // Moves one step at a time
-        Node fastPointer = this.head; // Moves two steps at a time
+        Node result = null; // Holds the final middle node to be returned
+        Node slowPointer = this.head; // Pointer that moves one step at a time to find the middle
+        Node fastPointer = this.head; // Pointer that moves two steps at a time to speed through the list
 
-        // Traverse the list
+        // Traverse the list as long as there are nodes for fastPointer to jump ahead
         while (fastPointer != null && fastPointer.next != null) {
-            slowPointer = slowPointer.next; // Move slowPointer one step forward
             fastPointer = fastPointer.next.next; // Move fastPointer two steps forward
+            if (fastPointer != null) { // Only move slowPointer if fastPointer has not reached the end
+                slowPointer = slowPointer.next; // Move slowPointer one step forward
+            }
         }
 
-        // Assign slowPointer to result after traversal
-        result = slowPointer;
+        // After traversal, slowPointer points to the middle node
+        result = slowPointer; // Assign the middle node to result
 
         return result; // Return the middle node or null if the list is empty
-    }// method SimpleLinkedList.findMiddle
+    } // method SimpleLinkedList.findMiddle
 
     /**
      * Reverses the linked list by reversing the direction of links.
@@ -120,7 +122,7 @@ public class SimpleLinkedList {
         // Traverse and reverse the links
         while (currentNode != null) {
             Node nextNode = currentNode.next; // Temporarily store the next node
-            currentNode.next = newHead; // Reverse the current node's link to point to the new head
+            currentNode.next = newHead; // Reverse the current node's link to point to the new head, 
             newHead = currentNode; // Update the new head to the current node
             currentNode = nextNode; // Move to the next node in the original list
         }
